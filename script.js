@@ -401,7 +401,7 @@ async function actualizarInterpretacion(datos) {
     };
 
     try {
-        const respuesta = await fetch("http://localhost:3000/api/interpretar", {
+     const respuesta = await fetch("/api/interpretar", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(resumen)
