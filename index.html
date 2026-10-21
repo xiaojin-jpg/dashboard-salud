@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Académico | EduSalud</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Plugin para etiquetas sobre barras/donas -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">✿</div>
+            <div>
+                <h2>Panel académico</h2>
+                <p>Programas de la salud</p>
+            </div>
+        </div>
+
+        <p class="sidebar-heading">FILTROS ACADÉMICOS</p>
+
+        <div class="filter-group">
+            <label>Programas académicos</label>
+            <div id="filtroProgramas" class="check-list">
+                <label class="check-option"><input type="checkbox" value="Medicina"> Medicina</label>
+                <label class="check-option"><input type="checkbox" value="Enfermería"> Enfermería</label>
+                <label class="check-option"><input type="checkbox" value="Odontología"> Odontología</label>
+                <label class="check-option"><input type="checkbox" value="Fisioterapia"> Fisioterapia</label>
+                <label class="check-option"><input type="checkbox" value="Bacteriología"> Bacteriología</label>
+            </div>
+            <small>Marca uno o varios programas.</small>
+        </div>
+
+        <div class="filter-group">
+            <label>Sedes</label>
+            <div id="filtroSedes" class="check-list">
+                <label class="check-option"><input type="checkbox" value="Cartagena"> Cartagena</label>
+                <label class="check-option"><input type="checkbox" value="Montería"> Montería</label>
+                <label class="check-option"><input type="checkbox" value="Bogotá"> Bogotá</label>
+            </div>
+            <small>Marca una o varias sedes.</small>
+        </div>
+
+        <div class="filter-group">
+            <label>Estrato socioeconómico</label>
+            <div id="filtroEstratos" class="check-list">
+                <label class="check-option"><input type="checkbox" value="1"> Estrato 1</label>
+                <label class="check-option"><input type="checkbox" value="2"> Estrato 2</label>
+                <label class="check-option"><input type="checkbox" value="3"> Estrato 3</label>
+                <label class="check-option"><input type="checkbox" value="4"> Estrato 4</label>
+                <label class="check-option"><input type="checkbox" value="5"> Estrato 5</label>
+                <label class="check-option"><input type="checkbox" value="6"> Estrato 6</label>
+            </div>
+            <small>Marca uno o varios estratos.</small>
+        </div>
+
+        <div class="filter-group">
+            <label for="sexo">Sexo</label>
+            <select id="sexo">
+                <option value="Todos">Todos</option>
+                <option value="Femenino">Femenino</option>
+                <option value="Masculino">Masculino</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="año">Año académico</label>
+            <select id="año">
+                <option value="Todos">Todos los años</option>
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="jornada">Jornada</label>
+            <select id="jornada">
+                <option value="Todos">Todas las jornadas</option>
+                <option value="Diurna">Diurna</option>
+                <option value="Nocturna">Nocturna</option>
+            </select>
+        </div>
+
+        <button id="btnLimpiar" class="reset-button">↺ Limpiar filtros</button>
+
+        <div class="sidebar-footer">
+            <span class="status-dot"></span>
+            Datos simulados para análisis académico
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">ANÁLISIS E INDICADORES</p>
+                <h1>Dashboard Académico</h1>
+                <p class="subtitle">Estudiantes de programas de Ciencias de la Salud</p>
+            </div>
+            <div class="top-tag-container">
+                <span class="top-tag">✿ Periodo 2024-2025</span>
+                <span id="estadoFiltros" class="result-tag">Todos los registros</span>
+            </div>
+        </header>
+
+        <section class="kpi-grid">
+            <article class="kpi-card pink">
+                <div class="kpi-top"><span>Total de estudiantes</span><span>♙</span></div>
+                <h2 id="totalEstudiantes">0</h2>
+                <p>Registros filtrados</p>
+            </article>
+            <article class="kpi-card lilac">
+                <div class="kpi-top"><span>Programas activos</span><span>▤</span></div>
+                <h2 id="totalProgramas">0</h2>
+                <p>Con estudiantes registrados</p>
+            </article>
+            <article class="kpi-card sage">
+                <div class="kpi-top"><span>Sedes activas</span><span>⌖</span></div>
+                <h2 id="totalSedes">0</h2>
+                <p>Con estudiantes registrados</p>
+            </article>
+            <article class="kpi-card cream">
+                <div class="kpi-top"><span>Jornada principal</span><span>⏱</span></div>
+                <h2 id="jornadaPrincipal">-</h2>
+                <p>Mayor número de inscritos</p>
+            </article>
+        </section>
+
+        <section class="section-heading">
+            <div>
+                <h2>Visualización de datos</h2>
+                <p>Los gráficos cambian según los filtros seleccionados.</p>
+            </div>
+        </section>
+
+        <section class="charts-grid">
+            <article class="chart-card">
+                <h3>Estudiantes por programa</h3>
+                <p class="chart-subtitle">Comparación entre programas</p>
+                <div class="chart-container"><canvas id="graficoProgramas"></canvas></div>
+            </article>
+
+            <article class="chart-card">
+                <h3>Distribución por sexo</h3>
+                <p class="chart-subtitle">Participación porcentual</p>
+                <div class="chart-container"><canvas id="graficoSexo"></canvas></div>
+            </article>
+
+            <article class="chart-card">
+                <h3>Estudiantes por sede</h3>
+                <p class="chart-subtitle">Comparación entre ubicaciones</p>
+                <div class="chart-container"><canvas id="graficoSedes"></canvas></div>
+            </article>
+
+            <article class="chart-card">
+                <h3>Distribución por estrato</h3>
+                <p class="chart-subtitle">Cantidad de estudiantes por estrato</p>
+                <div class="chart-container"><canvas id="graficoEstratos"></canvas></div>
+            </article>
+
+            <article class="chart-card">
+                <h3>Distribución por jornada</h3>
+                <p class="chart-subtitle">Jornada Diurna vs Nocturna</p>
+                <div class="chart-container"><canvas id="graficoJornada"></canvas></div>
+            </article>
+
+            <article class="chart-card">
+                <h3>Comparación por año</h3>
+                <p class="chart-subtitle">Registros académicos de 2024 y 2025</p>
+                <div class="chart-container"><canvas id="graficoAños"></canvas></div>
+            </article>
+        </section>
+
+        <section class="bottom-grid">
+            <article class="table-card">
+                <h2>Detalle de resultados</h2>
+                <p class="chart-subtitle">Resumen por programa académico</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr><th>Programa</th><th>Estudiantes</th><th>Porcentaje</th></tr>
+                        </thead>
+                        <tbody id="tablaResultados"></tbody>
+                    </table>
+                </div>
+            </article>
+
+            <article class="interpretation-card">
+                <div class="interpretation-title">
+                    <span class="interpretation-icon">✧</span>
+                    <div>
+                        <h2>Interpretación de datos</h2>
+                        <p class="chart-subtitle">Análisis descriptivo automático</p>
+                    </div>
+                </div>
+                <div id="interpretacion">Cargando resultados...</div>
+                <p class="disclaimer">Los resultados son simulados y no representan cifras reales de una institución.</p>
+            </article>
+        </section>
+
+        <footer>Dashboard académico · Ciencias de la Salud · Proyecto educativo</footer>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
